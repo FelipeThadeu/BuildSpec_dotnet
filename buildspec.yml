@@ -1,0 +1,27 @@
+version: 0.2
+
+env:
+  variables:
+    DOTNET_CORE_RUNTIME: 3.1 #versão do projeto
+    PROJECT: project #Nome do projeto
+phases:
+  install:
+    runtime-sersions:
+      dotnet: ${DOTNET_CORE_RUNTIME}
+  pre_build:
+    commands:
+      - echo Restore started on `date`
+      - dotnet restore
+  build:
+    commands:
+      - echo Build started on `date`
+      - dotnet build API/Api.csproj
+  post_build:
+    commands:
+       - echo Publish started on `date`
+       - dotnet publish -c Release -r linux-x64 -o ./build_output ./${PROJECT}/${PROJECT}.csproj --self-contained false
+artifacts:
+  files:
+    - '**/*'
+  base-directory: ./build_output #Direciona a pasta da aplicação para build_output
+  discard_paths: no
